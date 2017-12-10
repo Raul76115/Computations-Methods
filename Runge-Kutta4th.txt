@@ -1,0 +1,31 @@
+
+//Runge-Kutta Fourth Order
+
+#include<stdio.h>
+float f(float t, float w){
+	float y=w-(t*t)+1;
+return y;
+}
+
+int main(int argc, char**argv){
+
+int a=1;
+int b=2;
+float alpha=0.5;
+float h=0.2;
+int N = (b-a)/h;
+float t=a;
+float w= alpha;
+printf("(t,w) = (%f,%f)\n", t,w);
+float k1,k2,k3,k4;
+for(int i = 1;i<=N;i++{
+	k1= h*f(t,w);
+	k2= h*f(t+.5*h,w+.5*k1);
+	k3= h*f(t+.5*h,w+.5*k2);
+	k4= h*f(t+h,w+.5*k3);
+	w=w+(k1+2*k2+2*k3+k4)/6;
+	t=a+i*h;
+printf("(t,w) = (%f,%f)\n", t,w);
+}
+return 0 ;
+}

@@ -1,0 +1,326 @@
+// Steepest Descent
+
+#include<stdio.h>
+#include<math.h>
+
+double f1(double x1, double x2, double x3){
+
+	double y = (x1*x1*x1) + (x1*x1)*x2 - x1*x3 + 6;
+	return y;
+}
+
+double f2(double x1, double x2, double x3){
+
+	double y = exp(x1) + exp(x2) - x3;
+	return y;
+}
+
+double f3(double x1, double x2, double x3){
+
+	double y = (x2*x2) - 2 * x1*x3 - 4;
+	return y;
+}
+
+double g(double x1, double x2,double x3){
+
+double sum = (f1(x1,x2,x3)*f1(x1,x2,x3))+(f2(x1,x2,x3)*f2(x1,x2,x3))+(f3(x1,x2,x3)*f3(x1,x2,x3));
+return sum;
+}
+
+double dg1(double x1, double x2, double x3){
+
+double g = (x1*x1*x1)+(x1*x1)*x2-x1*x3+6;
+double g1 = 3*(x1*x1)+2*x1*x2-x3;
+double h = exp(x1) + exp(x2)-x3;
+double h1 = exp(x1);
+double k = (x2*x2) -2*x1*x3-4;
+double k1 = -2*x3;
+double sum = 2*g*g1+2*h*h1+2*k*k1;
+return sum;
+}
+
+double dg2(double x1, double x2, double x3){
+
+double g = (x1*x1*x1)+(x1*x1)*x2-x1*x3+6;
+double g1 = (x1*x1);
+double h = exp(x1) + exp(x2)-x3;
+double h1 = exp(x2);
+double k = (x2*x2) -2*x1*x3-4;
+double k1 = (2*x2);
+double sum = 2*g*g1+2*h*h1+2*k*k1;
+return sum;
+}
+
+double dg3(double x1, double x2, double x3){
+
+double g = (x1*x1*x1)+(x1*x1)*x2-x1*x3+6;
+double g1 = -x1;
+double h = exp(x1) + exp(x2)-x3;
+double h1 = -1;
+double k = (x2*x2) -2*x1*x3-4;
+double k1 = -2*x1;
+double sum = 2*g*g1+2*h*h1+2*k*k1;
+return sum;
+}
+
+
+
+double Z(double a, double b, double c){
+
+double d = sqrt( (a*a)+(b*b)+(c*c));
+return d;
+
+}
+// Evaluating Polynomial using Newtons Method
+double P(int n, double alpha[], double h[], double a){
+	double temp = h[n-1];
+	for (int i = n - 1; i >= 1; i--){
+		temp = (temp)*(a - alpha[i]) + h[i];
+	}
+	double P = temp;
+	return P;
+}
+//2)ROMBERG FOR DERIVATIVE
+double D(int n, double alpha[], double h[], double a){
+	double f1, f2; 
+	double d[4][4] = { 0 };
+	double H = 0.05;
+
+
+	for (int i = 0; i < n; i++){
+		f1 = P(n, alpha, h, a + H);
+		f2 = P(n, alpha, h, a - H);
+		d[i][0] = (f1 - f2) / (2.0*H);
+		for (int j = 1; j <= i; j++){
+			d[i][j] = d[i][j - 1] + ((d[i][j - 1] - d[i - 1][j - 1]) / (pow(4, (j - 1)) - 1));
+		}
+		H = H / 2.0;
+	}
+	return d[n][n];
+}
+//Bisection to find roots of Derivative 
+double Bisection(int n, double alpha[], double h[],double a, double b){
+	
+	double error,c;
+
+	int nmax = 20;
+	double fa = D(n, alpha,h,a);
+	double fb = D(n, alpha, h, b);
+		error = b - a;
+		for (int s = 0; s <= nmax; s++){
+			error = error / 2;
+			c = a + error;
+			double fc = D(n, alpha, h, c);
+			if ((fa<0 && fc>0) || (fa > 0 && fc < 0)){
+				b = c;
+				fb = fc;
+			}
+			else{
+				a = c;
+				fa = fc;
+			}
+		}
+		return c;
+}
+
+double j(int n, double x1, double x2, double x3){
+	double y = 0;
+	switch (n)
+	{
+	case 1 :
+		 y = 3 * (x1*x1) + 2 * x1*x2 - x3;
+		return y;
+		break;
+	case 2:
+		 y = (x1*x1);
+		return y;
+		break;
+	case 3:
+		 y = -x1;
+		return y;
+		break;
+	case 4:
+		 y = exp(x1);
+		return y;
+		break;
+	case 5:
+		 y = exp(x2);
+		return y;
+		break;
+	case 6:
+		 y = -1;
+		return y;
+		break;
+	case 7:
+		 y = -2 * x3;
+		return y;
+		break;
+	case 8:
+		 y = 2 * x2;
+		return y;
+		break;
+	case 9:
+		 y = -2 * x1;
+		return y;
+		break;
+	default:
+
+
+		break;
+	}
+	
+}
+
+
+int main(int argc, char**argv){
+
+	int n = 4;
+	double x[3] = { 0 };
+	double TOL = 0.05;
+	int N = 10;
+	int k = 1;
+	while (k <= N){
+		double G[4] = { 0 };
+		G[1] = g(x[0], x[1], x[2]);
+		double z[3];
+		z[0] = dg1(x[0], x[1], x[2]);
+		z[1] = dg2(x[0], x[1], x[2]);
+		z[2] = dg3(x[0], x[1], x[2]);
+		double zo = Z(z[0], z[1], z[2]);
+		if (zo == 0){
+			printf("Zero gradient -(%f,%f,%f,%f)\n", x[0], x[1], x[2], G[1]);
+			break;
+		}
+
+		for (int i = 0; i < n - 1; i++){
+			z[i] = z[i] / zo;
+		}
+
+		double alpha[4] = { 0 };
+		alpha[1] = 0;
+		alpha[3] = 1;
+
+		G[3] = g(x[0] - alpha[3] * z[0], x[1] - alpha[3] * z[1], x[2] - alpha[3] * z[2]);
+
+		while (G[3] >= G[1]){
+			alpha[3] = alpha[3] / 2;
+			G[3] = g(x[0] - alpha[3] * z[0], x[1] - alpha[3] * z[1], x[2] - alpha[3] * z[2]);
+			if (alpha[2] < TOL / 2){
+
+				printf("No likely improvement-(%f,%f,%f,%f)\n", x[0], x[1], x[2], G[1]);
+				break;
+			}
+		}
+		alpha[2] = alpha[3] / 2;
+		G[2] = g(x[0] - alpha[2] * z[0], x[1] - alpha[2] * z[1], x[2] - alpha[2] * z[2]);
+		
+		double h[4] = { 0 };
+		h[1] = (G[2] - G[1]) / alpha[2];
+		h[2] = (G[3] - G[2] / (alpha[3] - alpha[2]));
+		h[3] = (h[2] - h[1]) / alpha[3];
+
+		
+		alpha[0] = 0.5*(alpha[2] - h[1] / h[3]);
+		G[0] = g(x[0] - alpha[0] * z[0], x[1] - alpha[0] * z[1], x[2] - alpha[0] * z[2]);
+
+
+		//3)USE BISECTION TO FIND Alpha
+		double a = Bisection(n, alpha, h, alpha[0], alpha[3]);
+		double B = g(x[0] - a * z[0], x[1] - a* z[1], x[2] - a* z[2]);
+		for (int t = 0; t < n - 1; t++){
+
+			x[t] = x[t] - a*z[t];
+
+		}
+
+		if (abs(B - G[1]) < TOL){
+			printf("(x1,x2,x3,g1)=(%f, %f, %f, %f)\n", x[0], x[1], x[2], B);
+
+		}
+
+
+		k = k + 1;
+	}
+
+
+//Newton's Method
+int K = 1;
+while (K <= N){
+	double F[3];
+	F[0] = f1(x[0], x[1], x[3]);
+	F[1] = f2(x[0], x[1], x[3]);
+	F[2] = f3(x[0], x[1], x[3]);
+	double J[3][3];
+	int u = 1;
+	for (int row = 0; row < 3; row++){
+		for (int col = 0; col < 3; col++){
+			J[row][col] = j(u, x[0], x[1], x[2]);
+			u++;
+		}
+	}
+
+	double I[3][3] = { 0 };
+	for (int row = 0; row < 3; row++){
+		for (int col = 0; col < 3; col++){
+			if (row == col){
+				I[row][col] = 1;
+			}
+		}
+	}
+
+
+
+	//Gaussian Elimination for inverse of J
+	for (int q = 0; q < 2; q++){
+		for (int y = q + 1; y < 3; y++){
+			double xmult = (J[q][y] / J[q][q]);
+			J[q][y] =J[q][y] - xmult*J[q][q];
+			I[q][y] = I[q][y] - xmult*I[q][q];
+			for (int o = q+1; o < 3; o++){
+				J[y][o] = J[y][o] - xmult*J[q][o];
+				I[y][o] = I[y][o] - xmult*I[q][o];
+			}
+		}
+	}
+
+	for (int row = 0; row < 2; row++){
+		for (int col = row + 1; col < 3; col++){
+			double xmult = (J[col][row] / J[row][row]);
+			J[col][row] = J[col][row] - xmult*J[row][row];
+			I[col][row] = I[col][row] - xmult*I[row][row];
+			
+		}
+	}
+	
+	
+		for (int col = 0; col < 3; col++){
+			double xmult = J[1][0] / J[0][0];
+			J[1][col] = J[1][col] - xmult*J[0][col];
+			I[1][col] = I[1][col] - xmult*I[0][col];
+		}
+	
+		for (int i = 0; i < 3; i++){
+			for (int j = 0; j < 3; j++){
+				J[i][j] = J[i][j] / J[i][i];
+				I[i][j] = I[i][j] / J[i][i];
+			}
+		}
+
+		double JiF[3] = { 0 };
+	for (int row = 0; row < 3; row++){
+		x[row] = x[row] - JiF[row];
+	}
+	if (Z(JiF[0], JiF[1], JiF[2]) < TOL){
+		printf("(x1,x2,x3)=(%f, %f, %f)\n", x[0], x[1], x[2]);
+	}
+	K++;
+}
+
+double g1 = f1(x[0], x[1], x[2]);
+double g2 = f2(x[0], x[1], x[2]);
+double g3 = f3(x[0], x[1], x[2]);
+printf("f1=%f,f2=%f,f3=%f", g1,g2,g3);
+return 0;
+
+}
+

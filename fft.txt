@@ -1,0 +1,47 @@
+//FastFourierTransform
+#include<stdio.h>
+#include<complex.h>
+#include<math.h>
+#define pi =3.14159265359
+
+void FFT(int m){
+
+int j,n, N,k;
+N=pow(2.0,m);
+double w,Z[N],C[N],D[N];
+w = cexp(-I*2*pi/N);
+for (k=0;k<=N-1;k++){
+Z[k]=pow(w,k);
+C[k]=f(2*pi*k/N);
+}
+for (n=0;n<=m-1;n++){
+for (k=0;k<=pow(2.0,m-n-1)-1;k++){
+for (j=0;j<=pow(2.0,n)-1;j++){
+u=C[pow(2.0,n)*k+j];
+v=Z[j*pow(2.0,m-n-1)]*C[pow(2.0,n)*k+pow(2.0,m-1)+j];
+D[pow(2.0,n+1)*k+j]=(u+v)/2.0;
+D[pow(2.0,n+1)*k+j+pow(2.0,n)]=(u-v)/2.0;
+}
+}
+for (j=0;j<=N-1;j++){
+C[j]=D[j];
+printf("%f",C[j]);
+}
+}
+
+
+
+
+}
+
+double f(double x){
+double y;
+return y=x*(pi-x);
+}
+
+int main(int argc,char**argv){
+
+int m = 4;
+FFT(4);
+
+return 0;}

@@ -1,0 +1,112 @@
+// Steepest Descent
+
+#include<stdio.h>
+#include<math.h>
+
+double g(double x1, double x2,double x3){
+
+double sum = (f1(x1,x2,x3)*f1(x1,x2,x3))+(f2(x1,x2,x3)*f2(x1,x2,x3))+(f3*f3);
+return sum;
+}
+
+double dg1(double x1, double x2, double x3){
+
+double g = (x1*x1*x1)+(x1*x1)*x2-x1*x3+6;
+double g1 = 3(x1*x1)+2*x1*x2-x3;
+double h = exp(x1) + exp(x2)-x3;
+double h1 = exp(x1);
+double k = (x2*x2) -2*x1*x3-4;
+double k1 = -2*x3;
+double sum = 2*g*g1+2*h*h1+2*k*k1;
+return sum;
+}
+
+double dg2(double x1, double x2, double x3){
+
+double g = (x1*x1*x1)+(x1*x1)*x2-x1*x3+6;
+double g1 = (x1*x1);
+double h = exp(x1) + exp(x2)-x3;
+double h1 = exp(x2);
+double k = (x2*x2) -2*x1*x3-4;
+double k1 = (2*x2);
+double sum = 2*g*g1+2*h*h1+2*k*k1;
+return sum;
+}
+
+double dg3(double x1, double x2, double x3){
+
+double g = (x1*x1*x1)+(x1*x1)*x2-x1*x3+6;
+double g1 = -x1;
+double h = exp(x1) + exp(x2)-x3;
+double h1 = -1;
+double k = (x2*x2) -2*x1*x3-4;
+double k1 = -2*x1;
+double sum = 2*g*g1+2*h*h1+2*k*k1;
+return sum;
+}
+
+double f1(double x1, double x2, double x3){
+
+double y = (x1*x1*x1)+(x1*x1)*x2-x1*x3+6;
+return y;
+}
+
+double f2(double x1, double x2, double x3){
+
+double y = exp(x1) + exp(x2)-x3;
+return y;
+}
+
+double f3(double x1, double x2, double x3){
+
+double y = (x2*x2) -2*x1*x3-4;
+return y;
+}
+
+double Z(double a, double b, double c){
+
+double d = sqrt( (a*a)+(b*b)+(c*c));
+return d;
+
+}
+
+int main (int arc, char**argv){
+
+int n = 3;
+double x[3]={0};
+double TOL = 0.05;
+int N = 10;
+int k =1;
+while(k<=N){
+double g1=g(x[0],x[1],x[2]);
+double z[3];
+z[0] = dg1(x1,x2,x3);
+z[1] = dg2(x1,x2,x3);
+z[2] = dg3(x1,x2,x3);
+double zo= Z(z[0],z[1],z[2]);
+if (zo ==0){
+printf("Zero gradient -(%f,%f,%f,%f)", x1,x2,x3,g1);
+break;
+}
+for (int i=0;i<=n;i++{
+
+z[i] = z[i]/zo;}
+double alpha1=0;
+double alpha3=1;
+
+double g3=g(x1-alpha3*z[0],x2-alpha3*z[1],x3-alpha3*z[2]);
+while(g3>=g1){
+alpha3=alpha3/2;
+g3=g(x1-alpha3*z[0],x2-alpha3*z[1],x3-alpha3*z[2]);
+if(alpha3<TOL/2){
+
+printf("No likely improvement-(%f,%f,%f,%f)",x1,x2,x3,g1);
+break;
+}
+
+}}
+
+
+return 0;
+
+}
